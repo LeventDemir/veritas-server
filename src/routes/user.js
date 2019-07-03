@@ -126,7 +126,7 @@ router.post('/isAuth', (req, res) => {
 
     User.findOne({ token: req.body.token }, (err, user) => {
         if (user) res.json({ isAuth: user.login })
-        else res.json({ el: "token" })
+        else res.json({ isAuth: false })
     })
 
 })
