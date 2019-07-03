@@ -99,27 +99,32 @@ router.post('/updateUserData', (req, res) => {
     const data = req.body.data
 
     if (data) {
-        if (data.token && data.photo && data.username) {
+        if (data.token, data.user && data.photo && data.username) {
 
             User.findOne({ token: data.token }, (err, user) => {
                 if (user) {
                     if (user.login) {
-                        user.photo = data.photo
+                        User.findOne({ uuid: data.user }, (err, user) => {
+                            if (user) {
+                                user.photo = data.photo
 
-                        if (user.username === data.username) {
-                            user.save(res.json({ msg: "updated" }))
-                        } else {
-                            User.findOne({ username: data.username }, (err, isTaken) => {
-                                if (isTaken) {
-                                    res.json({ el: "taken" })
-                                } else {
-                                    user.username = data.username
-                                    user.save(res.json({ msg: "updated" }))
+                                if (user.username === data.username) {
+                                    user.save(res.send({ msg: "updated" }))
                                 }
-                            })
-                        }
-                    } else res.json({ msg: "auth need" })
-                } else res.json({ el: "token" })
+                                else {
+                                    User.findOne({ username: data.username }, (err, isTaken) => {
+                                        if (isTaken) {
+                                            res.json({ el: "taken" })
+                                        } else {
+                                            user.username = data.username
+                                            user.save(res.json({ msg: "updated" }))
+                                        }
+                                    })
+                                }
+                            } else res.json({ el: "token" })
+                        })
+                    } else res.json({ el: false })
+                } else res.json({ el: false })
             })
         } else res.json({ el: false })
     } else res.json({ el: false })
