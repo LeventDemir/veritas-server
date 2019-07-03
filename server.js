@@ -13,7 +13,7 @@ mongoose.connect("mongodb://localhost/air-conditioner", { useNewUrlParser: true,
 mongoose.connection.on("open", () => console.log("Connected to mongodb"));
 mongoose.connection.on("error", err => console.log(`Mongodb connection error: ${err}`));
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '20mb' }))
 app.use(cors())
 
 
