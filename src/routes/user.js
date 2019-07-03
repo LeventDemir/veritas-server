@@ -11,10 +11,8 @@ const generateLength = 100;
 router.post("/createUser", (req, res) => {
     const data = req.body.data;
 
-    console.info(data)
-
     if (data) {
-        if (data.token && data.username && data.password) {
+        if (data.token && data.username && data.password && data.photo) {
             if (
                 data.username.length > 2 &&
                 data.username.length < 21 &&
@@ -100,35 +98,35 @@ router.post('/updateUserData', (req, res) => {
 
     if (data) {
         if (data.token, data.user && data.photo && data.username) {
+            if (data.username.length > 2 && data.username.length < 21) {
+                User.findOne({ token: data.token }, (err, user) => {
+                    if (user) {
+                        if (user.login) {
+                            User.findOne({ uuid: data.user }, (err, user) => {
+                                if (user) {
+                                    user.photo = data.photo
 
-            User.findOne({ token: data.token }, (err, user) => {
-                if (user) {
-                    if (user.login) {
-                        User.findOne({ uuid: data.user }, (err, user) => {
-                            if (user) {
-                                user.photo = data.photo
-
-                                if (user.username === data.username) {
-                                    user.save(res.send({ msg: "updated" }))
-                                }
-                                else {
-                                    User.findOne({ username: data.username }, (err, isTaken) => {
-                                        if (isTaken) {
-                                            res.json({ el: "taken" })
-                                        } else {
-                                            user.username = data.username
-                                            user.save(res.json({ msg: "updated" }))
-                                        }
-                                    })
-                                }
-                            } else res.json({ el: "token" })
-                        })
+                                    if (user.username === data.username) {
+                                        user.save(res.send({ msg: "updated" }))
+                                    }
+                                    else {
+                                        User.findOne({ username: data.username }, (err, isTaken) => {
+                                            if (isTaken) {
+                                                res.json({ el: "taken" })
+                                            } else {
+                                                user.username = data.username
+                                                user.save(res.json({ msg: "updated" }))
+                                            }
+                                        })
+                                    }
+                                } else res.json({ el: "token" })
+                            })
+                        } else res.json({ el: false })
                     } else res.json({ el: false })
-                } else res.json({ el: false })
-            })
+                })
+            } else res.json({ el: false })
         } else res.json({ el: false })
     } else res.json({ el: false })
-
 
 })
 
@@ -151,14 +149,20 @@ router.post('/removeUser', (req, res) => {
 
     if (data) {
         if (data.user && data.token) {
-            User.findOne({ token: data.token }, (err, user) => {
-                if (user) {
-                    if (user.login) {
-                        User.findOne({ token: data.user }, (err, user) => {
-                            if (user) user.remove(res.json({ msg: 'removed' }))
-                            else res.json({ el: false })
+            User.find({}, (err, users) => {
+                if (users) {
+                    if (users.length > 1) {
+                        User.findOne({ token: data.token }, (err, user) => {
+                            if (user) {
+                                if (user.login) {
+                                    User.findOne({ token: data.user }, (err, user) => {
+                                        if (user) user.remove(res.json({ msg: 'removed' }))
+                                        else res.json({ el: false })
+                                    })
+                                } else res.json({ el: false })
+                            } else res.json({ el: false })
                         })
-                    } else res.json({ el: false })
+                    } else res.json({ el: 'length' })
                 } else res.json({ el: false })
             })
         } else res.json({ el: false })
