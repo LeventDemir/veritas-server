@@ -43,6 +43,7 @@ router.post("/createUser", (req, res) => {
 });
 
 
+// Login
 router.post("/login", (req, res) => {
     const data = req.body.data;
 
@@ -67,5 +68,107 @@ router.post("/login", (req, res) => {
     } else res.json({ el: false })
 
 });
+
+
+// Logout
+router.post('/logout', (req, res) => {
+
+    User.findOne({ token: req.body.token }, (err, user) => {
+        if (user) {
+
+            user.login = false
+
+            user.save(res.json({ msg: "signed out" }))
+
+        } else res.json({ el: false })
+    })
+
+})
+
+
+// Update user data
+router.post('/updateUserData', (req, res) => {
+
+    const data = req.body.data
+
+    if (data) {
+        if (data.token && data.photo && data.username) {
+
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        user.photo = data.photo
+
+                        if (user.username === data.username) {
+                            user.save(res.json({ msg: "updated" }))
+                        } else {
+                            User.findOne({ username: data.username }, (err, isTaken) => {
+                                if (isTaken) {
+                                    res.json({ el: "taken" })
+                                } else {
+                                    user.username = data.username
+                                    user.save(res.json({ msg: "updated" }))
+                                }
+                            })
+                        }
+                    } else res.json({ msg: "auth need" })
+                } else res.json({ el: "token" })
+            })
+        } else res.json({ el: false })
+    } else res.json({ el: false })
+
+
+})
+
+
+// Is auth
+router.post('/isAuth', (req, res) => {
+
+    User.findOne({ token: req.body.token }, (err, user) => {
+        if (user) res.json({ isAuth: user.login })
+        else res.json({ el: "token" })
+    })
+
+})
+
+
+// Delete user
+
+
+// Get users
+router.post('/getUsers', (req, res) => {
+
+    User.findOne({ token: req.body.token }, (err, user) => {
+        if (user) {
+            if (user.login) User.find({}, (err, users) => res.json(users))
+            else res.json({ el: "auth" })
+        } else res.json({ el: false })
+    })
+
+})
+
+
+// Get user
+router.post('/getUser', (req, res) => {
+
+    const data = req.body.data
+
+    if (data) {
+        if (data.token && data.user) {
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        User.findOne({ uuid: data.user }, (err, user) => {
+                            if (user) res.json(user)
+                            else res.json({ el: false })
+                        })
+                    } else res.json({ el: "auth" })
+                } else res.json({ el: false })
+            })
+        } else res.json({ el: false })
+    } else res.json({ el: false })
+
+})
+
 
 module.exports = router;
