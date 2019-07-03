@@ -7,36 +7,44 @@ const router = express.Router();
 const generateLength = 100;
 
 
-// Create new user
+// Create user
 router.post("/createUser", (req, res) => {
     const data = req.body.data;
 
+    console.info(data)
+
     if (data) {
-        if (data.username && data.password) {
+        if (data.token && data.username && data.password) {
             if (
                 data.username.length > 2 &&
                 data.username.length < 21 &&
                 data.password.length > 7 &&
                 data.password.length < 17
             ) {
-                User.findOne({ username: data.username }, (err, user) => {
+                User.findOne({ token: data.token }, (err, user) => {
                     if (user) {
-                        res.json({ el: "there is" });
-                    } else {
-                        data.uuid = randGen(generateLength);
-                        data.token = randGen(generateLength);
+                        if (user.login) {
+                            User.findOne({ username: data.username }, (err, user) => {
+                                if (user) {
+                                    res.json({ el: "there is" });
+                                } else {
+                                    data.uuid = randGen(generateLength);
+                                    data.token = randGen(generateLength);
 
-                        const newUser = new User(data);
+                                    const newUser = new User(data);
 
-                        bcrypt.genSalt(10, (err, salt) => {
-                            bcrypt.hash(newUser.password, salt, (err, hash) => {
-                                newUser.password = hash;
+                                    bcrypt.genSalt(10, (err, salt) => {
+                                        bcrypt.hash(newUser.password, salt, (err, hash) => {
+                                            newUser.password = hash;
 
-                                newUser.save(res.json({ token: data.token }));
+                                            newUser.save(res.json({ token: data.token }));
+                                        });
+                                    });
+                                }
                             });
-                        });
-                    }
-                });
+                        } else res.json({ el: false })
+                    } else res.json({ el: false })
+                })
             } else res.json({ el: false });
         } else res.json({ el: false });
     } else res.json({ el: false });
@@ -66,7 +74,6 @@ router.post("/login", (req, res) => {
             })
         } else res.json({ el: false })
     } else res.json({ el: false })
-
 });
 
 
