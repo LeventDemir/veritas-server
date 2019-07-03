@@ -132,7 +132,27 @@ router.post('/isAuth', (req, res) => {
 })
 
 
-// Delete user
+// Remove user
+router.post('/removeUser', (req, res) => {
+
+    const data = req.body.data
+
+    if (data) {
+        if (data.user && data.token) {
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        User.findOne({ token: data.user }, (err, user) => {
+                            if (user) user.remove(res.json({ msg: 'removed' }))
+                            else res.json({ el: false })
+                        })
+                    } else res.json({ el: false })
+                } else res.json({ el: false })
+            })
+        } else res.json({ el: false })
+    } else res.json({ el: false })
+
+})
 
 
 // Get users
