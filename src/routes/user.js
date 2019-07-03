@@ -60,9 +60,9 @@ router.post("/login", (req, res) => {
 
                             user.save(res.json({ token: user.token }))
 
-                        } else res.json({ el: "password" });
+                        } else res.json({ el: false });
                     });
-                } else res.json({ el: "username" })
+                } else res.json({ el: false })
             })
         } else res.json({ el: false })
     } else res.json({ el: false })
