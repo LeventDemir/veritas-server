@@ -7,7 +7,6 @@ const user = new mongoose.Schema({
     unique: true
   },
   photo: {
-    default: "https://musichubs.herokuapp.com/public/base?image=avatar",
     type: String,
     required: true
   },
