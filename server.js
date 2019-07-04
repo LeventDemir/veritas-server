@@ -18,6 +18,11 @@ app.use(cors())
 
 
 app.use('/user', require('./src/routes/user'))
+app.use('/product', require('./src/routes/product'))
+
+
+app.get('*', (req, res) => res.json({ error_code: 404 }))
+app.post('*', (req, res) => res.json({ error_code: 404 }))
 
 
 app.listen(port, () => console.log(`App started on: ${port}`))

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const user = new mongoose.Schema({
   uuid: {
     type: String,
@@ -42,5 +43,6 @@ const user = new mongoose.Schema({
     unique: true
   }
 });
+
 
 module.exports = mongoose.model("User", user);
