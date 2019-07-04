@@ -52,6 +52,27 @@ router.post('/updateProduct', (req, res) => {
 })
 
 
+// Remove product
+router.post('/removeProduct', (req, res) => {
+    const data = req.body.data
+
+    if (data) {
+        if (data.token && data.product) {
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        Product.findOne({ uuid: data.product }, (err, product) => {
+                            if (product) product.remove(res.json({ msg: 'removed' }))
+                            else res.json({ el: false })
+                        })
+                    } else res.json({ el: false })
+                } else res.json({ el: false })
+            })
+        } else res.json({ el: false })
+    } else res.json({ el: false })
+})
+
+
 // Get products
 router.get('/getProducts', (req, res) => Product.find({}, (err, products) => res.json(products)))
 
