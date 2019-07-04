@@ -155,7 +155,7 @@ router.post('/removeUser', (req, res) => {
                         User.findOne({ token: data.token }, (err, user) => {
                             if (user) {
                                 if (user.login) {
-                                    User.findOne({ token: data.user }, (err, user) => {
+                                    User.findOne({ uuid: data.user }, (err, user) => {
                                         if (user) user.remove(res.json({ msg: 'removed' }))
                                         else res.json({ el: false })
                                     })
