@@ -26,7 +26,16 @@ router.post('/createProduct', (req, res) => {
 
 
 // Get products
-router.get(`/getProducts`, (req, res) => Product.find({}, (err, products) => res.json(products)))
+router.get('/getProducts', (req, res) => Product.find({}, (err, products) => res.json(products)))
+
+
+// Get product
+router.get('/getProduct', (req, res) => {
+    Product.findOne({ uuid: req.query.product }, (err, product) => {
+        if (product) res.json(product)
+        else res.json({ el: false })
+    })
+})
 
 
 module.exports = router
