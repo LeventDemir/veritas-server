@@ -25,6 +25,33 @@ router.post('/createProduct', (req, res) => {
 })
 
 
+// Update product
+router.post('/updateProduct', (req, res) => {
+    const data = req.body.data
+
+    if (data) {
+        if (data.token && data.product && data.photo && data.name && data.categorie && data.description) {
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        Product.findOne({ uuid: data.product }, (err, product) => {
+                            if (product) {
+                                product.photo = data.photo
+                                product.name = data.name
+                                product.categorie = data.categorie
+                                product.description = data.description
+
+                                product.save(res.json({ msg: 'updated' }))
+                            } else res.json({ el: false })
+                        })
+                    } else res.json({ el: false })
+                } else res.json({ el: false })
+            })
+        } else res.json({ el: false })
+    } else res.json({ el: false })
+})
+
+
 // Get products
 router.get('/getProducts', (req, res) => Product.find({}, (err, products) => res.json(products)))
 
