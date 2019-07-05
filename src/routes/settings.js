@@ -5,7 +5,8 @@ const Settings = require("../models/settings");
 const router = express.Router();
 
 
-router.post('/update', (req, res) => {
+// Update settinsg
+router.post('/updateSettings', (req, res) => {
     const data = req.body.data
 
     if (data) {
@@ -36,6 +37,9 @@ router.post('/update', (req, res) => {
         } else res.json({ el: false })
     } else res.json({ el: false })
 })
+
+
+router.get('/getSettings', (req, res) => Settings.findOne({}, (err, settings) => res.json(settings)))
 
 
 module.exports = router
