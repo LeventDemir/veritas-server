@@ -77,6 +77,10 @@ router.post('/removeProduct', (req, res) => {
 router.get('/getProducts', (req, res) => Product.find({}, (err, products) => res.json(products)))
 
 
+// Get products by categorie
+router.get('/getProductsByCategorie', (req, res) => Product.find({ categorie: req.query.categorie }, (err, products) => res.json(products)))
+
+
 // Get product
 router.get('/getProduct', (req, res) => {
     Product.findOne({ uuid: req.query.product }, (err, product) => {
