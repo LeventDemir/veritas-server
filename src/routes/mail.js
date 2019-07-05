@@ -25,7 +25,14 @@ router.post('/send', (req, res) => {
                     from: "musichub.email@gmail.com",
                     to: settings.email,
                     subject: data.subject,
-                    text: data.message
+                    text: data.message,
+                    html: `
+                    <p><b>İsim:</b> ${data.name}</p>
+                    <p><b>Telefon:</b> ${data.phone}</p>
+                    <p><b>Email:</b> ${data.email}</p>
+                    <p><b>Konu:</b> ${data.subject}</p>
+                    <p><b>Mesaj:</b> ${data.message}</p>
+                    `
                 };
 
                 transporter.sendMail(mailOptions, err => {
