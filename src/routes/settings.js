@@ -39,7 +39,14 @@ router.post('/updateSettings', (req, res) => {
 })
 
 
-router.get('/getSettings', (req, res) => Settings.findOne({}, (err, settings) => res.json(settings)))
+router.get('/getSettings', (req, res) => Settings.findOne({}, (err, settings) => res.json({
+    email: settings.email,
+    phone: settings.phone,
+    instagram: settings.instagram,
+    twitter: settings.twitter,
+    facebook: settings.facebook,
+    address: settings.address,
+})))
 
 
 module.exports = router

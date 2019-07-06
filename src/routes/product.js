@@ -74,17 +74,58 @@ router.post('/removeProduct', (req, res) => {
 
 
 // Get products
-router.get('/getProducts', (req, res) => Product.find({}, (err, products) => res.json(products)))
+router.get('/getProducts', (req, res) => {
+    Product.find({}, (err, products) => {
+        const data = []
+
+        for (let product in products) {
+            let x = {}
+
+            x.uuid = products[product].uuid
+            x.photo = products[product].photo
+            x.name = products[product].name
+            x.categorie = products[product].categorie
+
+            data.push(x)
+
+            x = {}
+        }
+
+        res.json(data)
+    })
+})
 
 
 // Get products by categorie
-router.get('/getProductsByCategorie', (req, res) => Product.find({ categorie: req.query.categorie }, (err, products) => res.json(products)))
+router.get('/getProductsByCategorie', (req, res) => {
+    Product.find({ categorie: req.query.categorie }, (err, products) => {
+        const data = []
+
+        for (let product in products) {
+            let x = {}
+
+            x.uuid = products[product].uuid
+            x.photo = products[product].photo
+            x.name = products[product].name
+
+            data.push(x)
+
+            x = {}
+        }
+
+        res.json(data)
+    })
+})
 
 
 // Get product
 router.get('/getProduct', (req, res) => {
     Product.findOne({ uuid: req.query.product }, (err, product) => {
-        if (product) res.json(product)
+        if (product) res.json({
+            photo: product.photo,
+            name: product.name,
+            description: product.description,
+        })
         else res.json({ el: false })
     })
 })
