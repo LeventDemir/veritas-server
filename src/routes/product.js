@@ -60,7 +60,7 @@ router.post('/updateProduct', (req, res) => {
                                         pdf.featuresPdf = data.featuresPdf
 
                                         pdf.save(product.save(res.json({ msg: 'updated' })))
-                                    }
+                                    } else product.save(res.json({ msg: 'updated' }))
                                 })
                             } else res.json({ el: false })
                         })
@@ -82,7 +82,13 @@ router.post('/removeProduct', (req, res) => {
                 if (user) {
                     if (user.login) {
                         Product.findOne({ uuid: data.product }, (err, product) => {
-                            if (product) product.remove(res.json({ msg: 'removed' }))
+                            const uuid = product.uuid
+                            if (product) product.remove(() => {
+                                Pdf.findOne({ product: uuid }, (err, pdf) => {
+                                    if (pdf) pdf.remove(res.json({ msg: 'removed' }))
+                                    else res.json({ msg: 'removed' })
+                                })
+                            })
                             else res.json({ el: false })
                         })
                     } else res.json({ el: false })
