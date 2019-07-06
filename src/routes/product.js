@@ -124,6 +124,7 @@ router.get('/getProduct', (req, res) => {
         if (product) res.json({
             photo: product.photo,
             name: product.name,
+            categorie: product.categorie,
             description: product.description,
         })
         else res.json({ el: false })
