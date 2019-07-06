@@ -1,7 +1,6 @@
 const express = require("express");
 const User = require("../models/user");
 const Product = require("../models/product");
-const Pdf = require("../models/pdf");
 const randGen = require("../utils/randGen");
 const router = express.Router();
 
@@ -17,17 +16,7 @@ router.post('/createProduct', (req, res) => {
                     if (user.login) {
                         data.uuid = randGen(100)
 
-                        const pdf = {
-                            uuid: randGen(100),
-                            product: data.uuid,
-                            categoriePdf: data.categoriePdf,
-                            featuresPdf: data.featuresPdf
-                        }
-
-                        data.categoriePdf = data.categoriePdf ? true : false
-                        data.featuresPdf = data.featuresPdf ? true : false
-
-                        new Product(data).save(() => new Pdf(pdf).save(res.json({ msg: 'created' })))
+                        new Product(data).save(res.json({ msg: 'created' }))
                     } else res.json({ el: false })
                 } else res.json({ el: false })
             })
@@ -51,17 +40,8 @@ router.post('/updateProduct', (req, res) => {
                                 product.name = data.name
                                 product.categorie = data.categorie
                                 product.description = data.description
-                                product.categoriePdf = data.categoriePdf ? true : false
-                                product.featuresPdf = data.featuresPdf ? true : false
 
-                                Pdf.findOne({ product: product.uuid }, (err, pdf) => {
-                                    if (pdf) {
-                                        pdf.categoriePdf = data.categoriePdf
-                                        pdf.featuresPdf = data.featuresPdf
-
-                                        pdf.save(product.save(res.json({ msg: 'updated' })))
-                                    } else product.save(res.json({ msg: 'updated' }))
-                                })
+                                product.save(res.json({ msg: 'updated' }))
                             } else res.json({ el: false })
                         })
                     } else res.json({ el: false })
@@ -83,12 +63,7 @@ router.post('/removeProduct', (req, res) => {
                     if (user.login) {
                         Product.findOne({ uuid: data.product }, (err, product) => {
                             const uuid = product.uuid
-                            if (product) product.remove(() => {
-                                Pdf.findOne({ product: uuid }, (err, pdf) => {
-                                    if (pdf) pdf.remove(res.json({ msg: 'removed' }))
-                                    else res.json({ msg: 'removed' })
-                                })
-                            })
+                            if (product) product.remove(res.json({ msg: 'removed' }))
                             else res.json({ el: false })
                         })
                     } else res.json({ el: false })
@@ -152,8 +127,6 @@ router.get('/getProduct', (req, res) => {
             name: product.name,
             categorie: product.categorie,
             description: product.description,
-            categoriePdf: product.categoriePdf || "",
-            featuresPdf: product.featuresPdf || ""
         })
         else res.json({ el: false })
     })

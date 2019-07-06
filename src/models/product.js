@@ -23,12 +23,6 @@ const product = new mongoose.Schema({
         type: String,
         required: true
     },
-    categoriePdf: {
-        type: Boolean
-    },
-    featuresPdf: {
-        type: Boolean
-    },
     createdDate: {
         type: Date,
         required: true,
