@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000
 // cloud db:  mongodb://diamondelectric:diamon.20.delectric@ds247827.mlab.com:47827/diamondelectric
 // local db:  mongodb://localhost/air-conditioner
 
-mongoose.connect("mongodb://localhost/air-conditioner",
+mongoose.connect("mongodb://diamondelectric:diamon.20.delectric@ds247827.mlab.com:47827/diamondelectric",
     { useNewUrlParser: true, useCreateIndex: true }
 )
 
