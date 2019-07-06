@@ -8,7 +8,12 @@ const app = express()
 const port = process.env.PORT || 3000
 
 
-mongoose.connect("mongodb://localhost/air-conditioner", { useNewUrlParser: true, useCreateIndex: true })
+// cloud db:  mongodb://diamondelectric:diamon.20.delectric@ds247827.mlab.com:47827/diamondelectric
+// local db:  mongodb://localhost/air-conditioner
+
+mongoose.connect("mongodb://diamondelectric:diamon.20.delectric@ds247827.mlab.com:47827/diamondelectric",
+    { useNewUrlParser: true, useCreateIndex: true }
+)
 
 mongoose.connection.on("open", () => console.log("Connected to mongodb"));
 mongoose.connection.on("error", err => console.log(`Mongodb connection error: ${err}`));

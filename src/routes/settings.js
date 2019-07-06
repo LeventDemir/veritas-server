@@ -10,15 +10,7 @@ router.post('/updateSettings', (req, res) => {
     const data = req.body.data
 
     if (data) {
-        if (
-            data.token &&
-            data.email &&
-            data.phone &&
-            data.instagram &&
-            data.twitter &&
-            data.facebook &&
-            data.address
-        ) {
+        if (data.token && data.email && data.phone && data.address) {
             User.findOne({ token: data.token }, (err, user) => {
                 if (user) {
                     if (user.login) {
@@ -39,14 +31,19 @@ router.post('/updateSettings', (req, res) => {
 })
 
 
-router.get('/getSettings', (req, res) => Settings.findOne({}, (err, settings) => res.json({
-    email: settings.email,
-    phone: settings.phone,
-    instagram: settings.instagram,
-    twitter: settings.twitter,
-    facebook: settings.facebook,
-    address: settings.address,
-})))
+// get Settings
+router.get('/getSettings', (req, res) => Settings.findOne({}, (err, settings) => {
+    if (settings) {
+        res.json({
+            email: settings.email || "",
+            phone: settings.phone || "",
+            instagram: settings.instagram || "",
+            twitter: settings.twitter || "",
+            facebook: settings.facebook || "",
+            address: settings.address || "",
+        })
+    }
+}))
 
 
 module.exports = router
