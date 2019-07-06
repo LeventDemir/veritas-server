@@ -7,6 +7,11 @@ const pdf = new mongoose.Schema({
         required: true,
         unique: true
     },
+    product: {
+        type: String,
+        required: true,
+        unique: true
+    },
     categoriePdf: {
         type: String
     },

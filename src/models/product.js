@@ -24,10 +24,10 @@ const product = new mongoose.Schema({
         required: true
     },
     categoriePdf: {
-        type: String
+        type: Boolean
     },
     featuresPdf: {
-        type: String
+        type: Boolean
     },
     createdDate: {
         type: Date,

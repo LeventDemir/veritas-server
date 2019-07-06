@@ -15,16 +15,17 @@ router.post('/createProduct', (req, res) => {
             User.findOne({ token: data.token }, (err, user) => {
                 if (user) {
                     if (user.login) {
+                        data.uuid = randGen(100)
+
                         const pdf = {
                             uuid: randGen(100),
+                            product: data.uuid,
                             categoriePdf: data.categoriePdf,
                             featuresPdf: data.featuresPdf
                         }
 
-                        data.categoriePdf = data.categoriePdf ? pdf.uuid : ""
-                        data.featuresPdf = data.featuresPdf ? pdf.uuid : ""
-
-                        data.uuid = randGen(100)
+                        data.categoriePdf = data.categoriePdf ? true : false
+                        data.featuresPdf = data.featuresPdf ? true : false
 
                         new Product(data).save(() => new Pdf(pdf).save(res.json({ msg: 'created' })))
                     } else res.json({ el: false })
@@ -50,8 +51,17 @@ router.post('/updateProduct', (req, res) => {
                                 product.name = data.name
                                 product.categorie = data.categorie
                                 product.description = data.description
+                                product.categoriePdf = data.categoriePdf ? true : false
+                                product.featuresPdf = data.featuresPdf ? true : false
 
-                                product.save(res.json({ msg: 'updated' }))
+                                Pdf.findOne({ product: product.uuid }, (err, pdf) => {
+                                    if (pdf) {
+                                        pdf.categoriePdf = data.categoriePdf
+                                        pdf.featuresPdf = data.featuresPdf
+
+                                        pdf.save(product.save(res.json({ msg: 'updated' })))
+                                    }
+                                })
                             } else res.json({ el: false })
                         })
                     } else res.json({ el: false })
