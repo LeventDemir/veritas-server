@@ -155,6 +155,8 @@ router.get('/getProduct', (req, res) => {
             name: product.name,
             categorie: product.categorie,
             description: product.description,
+            categoriePdf: product.categoriePdf || "",
+            featuresPdf: product.featuresPdf || ""
         })
         else res.json({ el: false })
     })
