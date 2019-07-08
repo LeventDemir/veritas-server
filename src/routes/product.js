@@ -98,7 +98,7 @@ router.post('/updateProduct', (req, res) => {
                                     const categoriePdf = fs.readdirSync(`src/static/${product.uuid}/`)
 
                                     if (categoriePdf.includes('categorie.pdf'))
-                                        fs.unlinkSync(`src/static/${product.uuid}/${categoriePdf[0]}`)
+                                        fs.unlinkSync(`src/static/${product.uuid}/categorie.pdf`)
 
                                     product.categoriePdf = ""
                                 }
@@ -115,7 +115,7 @@ router.post('/updateProduct', (req, res) => {
                                     const featuresPdf = fs.readdirSync(`src/static/${product.uuid}/`)
 
                                     if (featuresPdf.includes('features.pdf'))
-                                        fs.unlinkSync(`src/static/${product.uuid}/${featuresPdf[0]}`)
+                                        fs.unlinkSync(`src/static/${product.uuid}/features.pdf`)
 
                                     product.featuresPdf = ""
                                 }
@@ -142,7 +142,26 @@ router.post('/removeProduct', (req, res) => {
                     if (user.login) {
                         Product.findOne({ uuid: data.product }, (err, product) => {
                             const uuid = product.uuid
-                            if (product) product.remove(res.json({ msg: 'removed' }))
+                            if (product) {
+                                const photo = fs.readdirSync(`src/static/${product.uuid}/photo/`)
+                                const pdfs = fs.readdirSync(`src/static/${product.uuid}/`)
+
+                                if (photo.length > 0)
+                                    fs.unlinkSync(`src/static/${product.uuid}/photo/${photo[0]}`)
+
+                                fs.rmdirSync(`src/static/${product.uuid}/photo`)
+
+
+                                if (pdfs.includes('categorie.pdf'))
+                                    fs.unlinkSync(`src/static/${product.uuid}/categorie.pdf`)
+
+                                if (pdfs.includes('features.pdf'))
+                                    fs.unlinkSync(`src/static/${product.uuid}/features.pdf`)
+
+                                fs.rmdir(`src/static/${product.uuid}`)
+
+                                product.remove(res.json({ msg: 'removed' }))
+                            }
                             else res.json({ el: false })
                         })
                     } else res.json({ el: false })
