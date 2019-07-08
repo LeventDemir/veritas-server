@@ -18,6 +18,7 @@ router.post('/createProduct', (req, res) => {
                         data.uuid = randGen(50)
 
                         fs.mkdirSync(`src/static/${data.uuid}`)
+                        fs.mkdirSync(`src/static/${data.uuid}/photo`)
 
                         const imageData = data.photo.replace(/^data:image\/\w+;base64,/, "");
 
@@ -25,14 +26,14 @@ router.post('/createProduct', (req, res) => {
 
                         const buffer = new Buffer(imageData, 'base64');
 
-                        fs.writeFileSync(`src/static/${data.uuid}/${imageName}`, buffer);
+                        fs.writeFileSync(`src/static/${data.uuid}/photo/${imageName}`, buffer);
 
-                        data.photo = `http://localhost:3000/static/${data.uuid}/${imageName}`
+                        data.photo = `http://localhost:3000/static/${data.uuid}/photo/${imageName}`
 
                         if (data.categoriePdf) {
                             const pdfData = data.categoriePdf.replace(/^data:application\/\w+;base64,/, "");
                             const buffer = new Buffer(pdfData, 'base64');
-                            fs.writeFileSync(`src/static/${data.uuid}/categorie.pdf`, buffer, 'binary');
+                            fs.writeFileSync(`src/static/${data.uuid}/categorie.pdf`, buffer);
 
                             data.categoriePdf = `http://localhost:3000/static/${data.uuid}/categorie.pdf`
                         }
@@ -40,8 +41,8 @@ router.post('/createProduct', (req, res) => {
                         if (data.featuresPdf) {
                             const pdfData = data.featuresPdf.replace(/^data:application\/\w+;base64,/, "");
                             const buffer = new Buffer(pdfData, 'base64');
-                            fs.writeFileSync(`src/static/${data.uuid}/features.pdf`, buffer, 'binary');
-                            data.featuresPdf = `http://localhost:3000/static/${data.uuid}/categorie.pdf`
+                            fs.writeFileSync(`src/static/${data.uuid}/features.pdf`, buffer);
+                            data.featuresPdf = `http://localhost:3000/static/${data.uuid}/features.pdf`
                         }
 
                         new Product(data).save(res.json({ msg: 'created' }))
@@ -64,10 +65,60 @@ router.post('/updateProduct', (req, res) => {
                     if (user.login) {
                         Product.findOne({ uuid: data.product }, (err, product) => {
                             if (product) {
-                                product.photo = data.photo
                                 product.name = data.name
                                 product.categorie = data.categorie
                                 product.description = data.description
+
+                                if (data.photo !== product.photo) {
+                                    const photo = fs.readdirSync(`src/static/${product.uuid}/photo/`)
+
+                                    if (photo.length > 0)
+                                        fs.unlinkSync(`src/static/${product.uuid}/photo/${photo[0]}`)
+
+                                    const imageData = data.photo.replace(/^data:image\/\w+;base64,/, "");
+
+                                    const imageName = `photo.${data.photo.split(";")[0].split("/")[1]}`
+
+                                    const buffer = new Buffer(imageData, 'base64');
+
+                                    fs.writeFileSync(`src/static/${product.uuid}/photo/${imageName}`, buffer);
+
+                                    product.photo = `http://localhost:3000/static/${product.uuid}/photo/${imageName}`
+                                }
+
+                                if (data.categoriePdf) {
+                                    if (data.categoriePdf !== product.categoriePdf) {
+                                        const pdfData = data.categoriePdf.replace(/^data:application\/\w+;base64,/, "");
+                                        const buffer = new Buffer(pdfData, 'base64');
+                                        fs.writeFileSync(`src/static/${product.uuid}/categorie.pdf`, buffer);
+
+                                        product.categoriePdf = `http://localhost:3000/static/${product.uuid}/categorie.pdf`
+                                    }
+                                } else {
+                                    const categoriePdf = fs.readdirSync(`src/static/${product.uuid}/`)
+
+                                    if (categoriePdf.includes('categorie.pdf'))
+                                        fs.unlinkSync(`src/static/${product.uuid}/${categoriePdf[0]}`)
+
+                                    product.categoriePdf = ""
+                                }
+
+                                if (data.featuresPdf) {
+                                    if (data.featuresPdf !== product.featuresPdf) {
+                                        const pdfData = data.featuresPdf.replace(/^data:application\/\w+;base64,/, "");
+                                        const buffer = new Buffer(pdfData, 'base64');
+                                        fs.writeFileSync(`src/static/${product.uuid}/features.pdf`, buffer);
+
+                                        product.featuresPdf = `http://localhost:3000/static/${product.uuid}/features.pdf`
+                                    }
+                                } else {
+                                    const featuresPdf = fs.readdirSync(`src/static/${product.uuid}/`)
+
+                                    if (featuresPdf.includes('features.pdf'))
+                                        fs.unlinkSync(`src/static/${product.uuid}/${featuresPdf[0]}`)
+
+                                    product.featuresPdf = ""
+                                }
 
                                 product.save(res.json({ msg: 'updated' }))
                             } else res.json({ el: false })
