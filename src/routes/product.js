@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require('fs')
 const User = require("../models/user");
 const Product = require("../models/product");
 const randGen = require("../utils/randGen");
@@ -14,7 +15,34 @@ router.post('/createProduct', (req, res) => {
             User.findOne({ token: data.token }, (err, user) => {
                 if (user) {
                     if (user.login) {
-                        data.uuid = randGen(100)
+                        data.uuid = randGen(50)
+
+                        fs.mkdirSync(`src/static/${data.uuid}`)
+
+                        const imageData = data.photo.replace(/^data:image\/\w+;base64,/, "");
+
+                        const imageName = `photo.${data.photo.split(";")[0].split("/")[1]}`
+
+                        const buffer = new Buffer(imageData, 'base64');
+
+                        fs.writeFileSync(`src/static/${data.uuid}/${imageName}`, buffer);
+
+                        data.photo = `http://localhost:3000/static/${data.uuid}/${imageName}`
+
+                        if (data.categoriePdf) {
+                            const pdfData = data.categoriePdf.replace(/^data:application\/\w+;base64,/, "");
+                            const buffer = new Buffer(pdfData, 'base64');
+                            fs.writeFileSync(`src/static/${data.uuid}/categorie.pdf`, buffer, 'binary');
+
+                            data.categoriePdf = `http://localhost:3000/static/${data.uuid}/categorie.pdf`
+                        }
+
+                        if (data.featuresPdf) {
+                            const pdfData = data.featuresPdf.replace(/^data:application\/\w+;base64,/, "");
+                            const buffer = new Buffer(pdfData, 'base64');
+                            fs.writeFileSync(`src/static/${data.uuid}/features.pdf`, buffer, 'binary');
+                            data.featuresPdf = `http://localhost:3000/static/${data.uuid}/categorie.pdf`
+                        }
 
                         new Product(data).save(res.json({ msg: 'created' }))
                     } else res.json({ el: false })
