@@ -158,7 +158,7 @@ router.post('/removeProduct', (req, res) => {
                                 if (pdfs.includes('features.pdf'))
                                     fs.unlinkSync(`src/static/${product.uuid}/features.pdf`)
 
-                                fs.rmdir(`src/static/${product.uuid}`)
+                                fs.rmdirSync(`src/static/${product.uuid}`)
 
                                 product.remove(res.json({ msg: 'removed' }))
                             }
