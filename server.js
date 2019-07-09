@@ -25,6 +25,7 @@ app.use(cors())
 
 app.use('/user', require('./src/routes/user'))
 app.use('/product', require('./src/routes/product'))
+app.use('/message', require('./src/routes/message'))
 
 
 app.get('*', (req, res) => res.json({ error_code: 404 }))
