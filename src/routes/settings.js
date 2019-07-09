@@ -15,13 +15,9 @@ router.post('/updateSettings', (req, res) => {
                 if (user) {
                     if (user.login) {
                         Settings.findOne({}, (err, settings) => {
-                            settings.email = data.email
-                            settings.phone = data.phone
-                            settings.instagram = data.instagram
-                            settings.twitter = data.twitter
-                            settings.facebook = data.facebook
-                            settings.address = data.address
-                            settings.save(res.json({ msg: 'updated' }))
+                            if (settings) settings.remove()
+
+                            new Settings(data).save(res.json({ msg: 'updated' }))
                         })
                     } else res.json({ el: false })
                 } else res.json({ el: false })
@@ -34,14 +30,15 @@ router.post('/updateSettings', (req, res) => {
 // get Settings
 router.get('/getSettings', (req, res) => Settings.findOne({}, (err, settings) => {
     if (settings) {
-        res.json({
-            email: settings.email || "",
-            phone: settings.phone || "",
-            instagram: settings.instagram || "",
-            twitter: settings.twitter || "",
-            facebook: settings.facebook || "",
-            address: settings.address || "",
-        })
+        if (settings)
+            res.json({
+                email: settings.email,
+                phone: settings.phone,
+                instagram: settings.instagram,
+                twitter: settings.twitter,
+                facebook: settings.facebook,
+                address: settings.address
+            })
     }
 }))
 
