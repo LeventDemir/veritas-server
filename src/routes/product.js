@@ -182,6 +182,7 @@ router.get('/getProducts', (req, res) => {
             let x = {}
 
             x.uuid = products[product].uuid
+            x.price = products[product].price
             x.photo = products[product].photo
             x.name = products[product].name
             x.categorie = products[product].categorie
@@ -205,6 +206,7 @@ router.get('/getProductsByCategorie', (req, res) => {
             let x = {}
 
             x.uuid = products[product].uuid
+            x.price = products[product].price
             x.photo = products[product].photo
             x.name = products[product].name
 
