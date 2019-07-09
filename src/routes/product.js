@@ -11,7 +11,7 @@ router.post('/createProduct', (req, res) => {
     const data = req.body.data
 
     if (data) {
-        if (data.token && data.photo && data.name && data.categorie && data.description) {
+        if (data.token && data.photo && data.name && data.price && data.categorie && data.description) {
             User.findOne({ token: data.token }, (err, user) => {
                 if (user) {
                     if (user.login) {
@@ -59,13 +59,14 @@ router.post('/updateProduct', (req, res) => {
     const data = req.body.data
 
     if (data) {
-        if (data.token && data.product && data.photo && data.name && data.categorie && data.description) {
+        if (data.token && data.product && data.photo && data.price && data.name && data.categorie && data.description) {
             User.findOne({ token: data.token }, (err, user) => {
                 if (user) {
                     if (user.login) {
                         Product.findOne({ uuid: data.product }, (err, product) => {
                             if (product) {
                                 product.name = data.name
+                                product.price = data.price
                                 product.categorie = data.categorie
                                 product.description = data.description
 
@@ -223,10 +224,11 @@ router.get('/getProduct', (req, res) => {
         if (product) res.json({
             photo: product.photo,
             name: product.name,
+            price: product.price,
             categorie: product.categorie,
             description: product.description,
-            categoriePdf: product.categoriePdf || "",
-            featuresPdf: product.featuresPdf || ""
+            categoriePdf: product.categoriePdf,
+            featuresPdf: product.featuresPdf
         })
         else res.json({ el: false })
     })
