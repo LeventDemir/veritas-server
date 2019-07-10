@@ -67,4 +67,34 @@ router.post('/messages', (req, res) => {
 })
 
 
+// Get Message
+router.post('/message', (req, res) => {
+    const data = req.body.data
+
+    if (data) {
+        if (data.token, data.message) {
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        Message.findOne({ uuid: data.message }, (err, message) => {
+                            if (message) {
+                                res.json({
+                                    name: message.name,
+                                    email: message.email,
+                                    phone: message.phone,
+                                    subject: message.subject,
+                                    message: message.message,
+                                    createdDate: message.createdDate,
+                                })
+                            } else res.json({ success: false })
+                        })
+                    } else res.json({ success: false })
+                } else res.json({ success: false })
+            })
+        } else res.json({ success: false })
+    } else res.json({ success: false })
+
+})
+
+
 module.exports = router
