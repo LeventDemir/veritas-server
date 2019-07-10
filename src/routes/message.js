@@ -11,7 +11,13 @@ router.post('/send', (req, res) => {
 
     if (data) {
         if (data.name && data.phone && data.email && data.subject && data.message) {
+            const now = new Date()
+            const date = now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear()
+            const time = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()
+
             data.uuid = randGen(100)
+            data.createdDate = date + " - " + time
+
             new Message(data).save(err => {
                 if (err) res.json({ success: false })
                 else res.json({ success: true })
