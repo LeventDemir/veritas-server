@@ -28,7 +28,7 @@ router.post('/send', (req, res) => {
 })
 
 
-// Get Messages
+// Get messages
 router.post('/messages', (req, res) => {
 
     User.findOne({ token: req.body.token }, (err, user) => {
@@ -67,7 +67,7 @@ router.post('/messages', (req, res) => {
 })
 
 
-// Get Message
+// Get message
 router.post('/message', (req, res) => {
     const data = req.body.data
 
@@ -97,7 +97,7 @@ router.post('/message', (req, res) => {
 })
 
 
-// Read
+// Read message
 router.post('/read', (req, res) => {
     const data = req.body.data
 
@@ -110,6 +110,31 @@ router.post('/read', (req, res) => {
                             if (message) {
                                 message.read = true
                                 message.save(err => {
+                                    if (err) res.json({ success: false })
+                                    else res.json({ success: true })
+                                })
+                            } else res.json({ success: false })
+                        })
+                    } else res.json({ success: false })
+                } else res.json({ success: false })
+            })
+        } else res.json({ success: false })
+    } else res.json({ success: false })
+})
+
+
+// Remove message
+router.post('/remove', (req, res) => {
+    const data = req.body.data
+
+    if (data) {
+        if (data.token, data.message) {
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        Message.findOne({ uuid: data.message }, (err, message) => {
+                            if (message) {
+                                message.remove(err => {
                                     if (err) res.json({ success: false })
                                     else res.json({ success: true })
                                 })
