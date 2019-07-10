@@ -84,6 +84,7 @@ router.post('/message', (req, res) => {
                                     phone: message.phone,
                                     subject: message.subject,
                                     message: message.message,
+                                    read: message.read,
                                     createdDate: message.createdDate,
                                 })
                             } else res.json({ success: false })
@@ -93,7 +94,32 @@ router.post('/message', (req, res) => {
             })
         } else res.json({ success: false })
     } else res.json({ success: false })
+})
 
+
+// Read
+router.post('/read', (req, res) => {
+    const data = req.body.data
+
+    if (data) {
+        if (data.token, data.message) {
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        Message.findOne({ uuid: data.message }, (err, message) => {
+                            if (message) {
+                                message.read = true
+                                message.save(err => {
+                                    if (err) res.json({ success: false })
+                                    else res.json({ success: true })
+                                })
+                            } else res.json({ success: false })
+                        })
+                    } else res.json({ success: false })
+                } else res.json({ success: false })
+            })
+        } else res.json({ success: false })
+    } else res.json({ success: false })
 })
 
 
