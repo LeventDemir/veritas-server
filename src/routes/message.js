@@ -51,7 +51,7 @@ router.post('/messages', (req, res) => {
 
                             if (!messages[message].read) noRead += 1
 
-                            data.push(x)
+                            data.unshift(x)
 
                             x = {}
                         }

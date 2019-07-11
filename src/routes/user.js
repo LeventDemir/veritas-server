@@ -4,8 +4,6 @@ const User = require("../models/user");
 const randGen = require("../utils/randGen");
 const router = express.Router();
 
-const generateLength = 100;
-
 
 // Create user
 router.post("/createUser", (req, res) => {
@@ -26,8 +24,8 @@ router.post("/createUser", (req, res) => {
                                 if (user) {
                                     res.json({ el: "there is" });
                                 } else {
-                                    data.uuid = randGen(generateLength);
-                                    data.token = randGen(generateLength);
+                                    data.uuid = randGen(100);
+                                    data.token = randGen(100);
 
                                     const newUser = new User(data);
 
@@ -173,14 +171,17 @@ router.post('/removeUser', (req, res) => {
 
 // Get users
 router.post('/getUsers', (req, res) => {
-
     User.findOne({ token: req.body.token }, (err, user) => {
         if (user) {
-            if (user.login) User.find({}, (err, users) => res.json(users))
-            else res.json({ el: "auth" })
+            if (user.login) {
+                User.find({}, (err, users) => {
+                    if (users) {
+                        res.json(users)
+                    } else res.json({ el: "auth" })
+                })
+            } else res.json({ el: "auth" })
         } else res.json({ el: false })
     })
-
 })
 
 

@@ -8,10 +8,10 @@ const app = express()
 const port = process.env.PORT || 3000
 
 
-// cloud db:  mongodb://diamondelectric:diamon.20.delectric@ds247827.mlab.com:47827/diamondelectric
+// cloud db:  mongodb://veritas:veritas-0220@ds349857.mlab.com:49857/veritas
 // local db:  mongodb://localhost/air-conditioner
 
-mongoose.connect("mongodb://localhost/air-conditioner",
+mongoose.connect("mongodb://veritas:veritas-0220@ds349857.mlab.com:49857/veritas",
     { useNewUrlParser: true, useCreateIndex: true }
 )
 

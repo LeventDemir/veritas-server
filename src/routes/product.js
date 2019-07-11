@@ -187,7 +187,7 @@ router.get('/getProducts', (req, res) => {
             x.name = products[product].name
             x.categorie = products[product].categorie
 
-            data.push(x)
+            data.unshift(x)
 
             x = {}
         }
@@ -210,7 +210,7 @@ router.get('/getProductsByCategorie', (req, res) => {
             x.photo = products[product].photo
             x.name = products[product].name
 
-            data.push(x)
+            data.unshift(x)
 
             x = {}
         }
