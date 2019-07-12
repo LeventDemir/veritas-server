@@ -11,7 +11,7 @@ router.post('/createProduct', (req, res) => {
     const data = req.body.data
 
     if (data) {
-        if (data.token && data.photo && data.name && data.price && data.categorie && data.description) {
+        if (data.token && data.photo && data.name && data.categorie && data.description) {
             User.findOne({ token: data.token }, (err, user) => {
                 if (user) {
                     if (user.login) {
@@ -28,21 +28,21 @@ router.post('/createProduct', (req, res) => {
 
                         fs.writeFileSync(`src/static/${data.uuid}/photo/${imageName}`, buffer);
 
-                        data.photo = `http://localhost:3000/static/${data.uuid}/photo/${imageName}`
+                        data.photo = `http://18.188.8.112:3000/static/${data.uuid}/photo/${imageName}`
 
                         if (data.categoriePdf) {
                             const pdfData = data.categoriePdf.replace(/^data:application\/\w+;base64,/, "");
                             const buffer = new Buffer(pdfData, 'base64');
                             fs.writeFileSync(`src/static/${data.uuid}/categorie.pdf`, buffer);
 
-                            data.categoriePdf = `http://localhost:3000/static/${data.uuid}/categorie.pdf`
+                            data.categoriePdf = `http://18.188.8.112:3000/static/${data.uuid}/categorie.pdf`
                         }
 
                         if (data.featuresPdf) {
                             const pdfData = data.featuresPdf.replace(/^data:application\/\w+;base64,/, "");
                             const buffer = new Buffer(pdfData, 'base64');
                             fs.writeFileSync(`src/static/${data.uuid}/features.pdf`, buffer);
-                            data.featuresPdf = `http://localhost:3000/static/${data.uuid}/features.pdf`
+                            data.featuresPdf = `http://18.188.8.112:3000/static/${data.uuid}/features.pdf`
                         }
 
                         new Product(data).save(res.json({ msg: 'created' }))
@@ -59,14 +59,13 @@ router.post('/updateProduct', (req, res) => {
     const data = req.body.data
 
     if (data) {
-        if (data.token && data.product && data.photo && data.price && data.name && data.categorie && data.description) {
+        if (data.token && data.product && data.photo && data.name && data.categorie && data.description) {
             User.findOne({ token: data.token }, (err, user) => {
                 if (user) {
                     if (user.login) {
                         Product.findOne({ uuid: data.product }, (err, product) => {
                             if (product) {
                                 product.name = data.name
-                                product.price = data.price
                                 product.categorie = data.categorie
                                 product.description = data.description
 
@@ -84,7 +83,7 @@ router.post('/updateProduct', (req, res) => {
 
                                     fs.writeFileSync(`src/static/${product.uuid}/photo/${imageName}`, buffer);
 
-                                    product.photo = `http://localhost:3000/static/${product.uuid}/photo/${imageName}`
+                                    product.photo = `http://18.188.8.112:3000/static/${product.uuid}/photo/${imageName}`
                                 }
 
                                 if (data.categoriePdf) {
@@ -93,7 +92,7 @@ router.post('/updateProduct', (req, res) => {
                                         const buffer = new Buffer(pdfData, 'base64');
                                         fs.writeFileSync(`src/static/${product.uuid}/categorie.pdf`, buffer);
 
-                                        product.categoriePdf = `http://localhost:3000/static/${product.uuid}/categorie.pdf`
+                                        product.categoriePdf = `http://18.188.8.112:3000/static/${product.uuid}/categorie.pdf`
                                     }
                                 } else {
                                     const categoriePdf = fs.readdirSync(`src/static/${product.uuid}/`)
@@ -110,7 +109,7 @@ router.post('/updateProduct', (req, res) => {
                                         const buffer = new Buffer(pdfData, 'base64');
                                         fs.writeFileSync(`src/static/${product.uuid}/features.pdf`, buffer);
 
-                                        product.featuresPdf = `http://localhost:3000/static/${product.uuid}/features.pdf`
+                                        product.featuresPdf = `http://18.188.8.112:3000/static/${product.uuid}/features.pdf`
                                     }
                                 } else {
                                     const featuresPdf = fs.readdirSync(`src/static/${product.uuid}/`)
@@ -182,7 +181,6 @@ router.get('/getProducts', (req, res) => {
             let x = {}
 
             x.uuid = products[product].uuid
-            x.price = products[product].price
             x.photo = products[product].photo
             x.name = products[product].name
             x.categorie = products[product].categorie
@@ -206,7 +204,6 @@ router.get('/getProductsByCategorie', (req, res) => {
             let x = {}
 
             x.uuid = products[product].uuid
-            x.price = products[product].price
             x.photo = products[product].photo
             x.name = products[product].name
 
@@ -226,7 +223,6 @@ router.get('/getProduct', (req, res) => {
         if (product) res.json({
             photo: product.photo,
             name: product.name,
-            price: product.price,
             categorie: product.categorie,
             description: product.description,
             categoriePdf: product.categoriePdf,
