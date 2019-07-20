@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 // Create user
-router.post("/createUser", (req, res) => {
+router.post("/create", (req, res) => {
     const data = req.body.data;
 
     if (data) {
