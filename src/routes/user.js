@@ -43,6 +43,47 @@ router.post("/create", (req, res) => {
 });
 
 
+// Update user data
+router.post('/update', (req, res) => {
+    const data = req.body.data
+
+    if (data) {
+        if (data.token, data.user && data.photo && data.username) {
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        User.findOne({ uuid: data.user }, (err, user) => {
+                            if (user) {
+                                user.photo = data.photo
+
+                                if (user.username === data.username) {
+                                    user.save(err => {
+                                        if (err) res.send({ success: false })
+                                        else res.send({ success: true })
+                                    })
+                                }
+                                else {
+                                    User.findOne({ username: data.username }, (err, isTaken) => {
+                                        if (isTaken) res.json({ msg: "taken" })
+                                        else {
+                                            user.username = data.username
+                                            user.save(err => {
+                                                if (err) res.json({ success: false })
+                                                else res.json({ success: true })
+                                            })
+                                        }
+                                    })
+                                }
+                            } else res.json({ success: false })
+                        })
+                    } else res.json({ success: false })
+                } else res.json({ success: false })
+            })
+        } else res.json({ success: false })
+    } else res.json({ success: false })
+})
+
+
 // Login
 router.post("/login", (req, res) => {
     const data = req.body.data;
@@ -81,46 +122,6 @@ router.post('/logout', (req, res) => {
 
         } else res.json({ el: false })
     })
-
-})
-
-
-// Update user data
-router.post('/updateUserData', (req, res) => {
-
-    const data = req.body.data
-
-    if (data) {
-        if (data.token, data.user && data.photo && data.username) {
-            if (data.username.length > 2 && data.username.length < 21) {
-                User.findOne({ token: data.token }, (err, user) => {
-                    if (user) {
-                        if (user.login) {
-                            User.findOne({ uuid: data.user }, (err, user) => {
-                                if (user) {
-                                    user.photo = data.photo
-
-                                    if (user.username === data.username) {
-                                        user.save(res.send({ msg: "updated" }))
-                                    }
-                                    else {
-                                        User.findOne({ username: data.username }, (err, isTaken) => {
-                                            if (isTaken) {
-                                                res.json({ el: "taken" })
-                                            } else {
-                                                user.username = data.username
-                                                user.save(res.json({ msg: "updated" }))
-                                            }
-                                        })
-                                    }
-                                } else res.json({ el: "token" })
-                            })
-                        } else res.json({ el: false })
-                    } else res.json({ el: false })
-                })
-            } else res.json({ el: false })
-        } else res.json({ el: false })
-    } else res.json({ el: false })
 
 })
 
