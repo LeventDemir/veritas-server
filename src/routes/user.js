@@ -94,19 +94,19 @@ router.post("/login", (req, res) => {
                 if (user) {
                     bcrypt.compare(data.password, user.password, (err, result) => {
                         if (result) {
-
                             user.login = true
-                            user.lastLogin = new Date().getTime()
                             user.token = randGen(100)
 
-                            user.save(res.json({ token: user.token }))
-
-                        } else res.json({ el: false });
+                            user.save(err => {
+                                if (err) res.json({ success: false })
+                                else res.json({ token: user.token })
+                            })
+                        } else res.json({ success: false });
                     });
-                } else res.json({ el: false })
+                } else res.json({ success: false })
             })
-        } else res.json({ el: false })
-    } else res.json({ el: false })
+        } else res.json({ success: false })
+    } else res.json({ success: false })
 });
 
 

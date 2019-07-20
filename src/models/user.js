@@ -22,20 +22,10 @@ const user = new mongoose.Schema({
     type: String,
     required: true
   },
-  createdDate: {
-    type: Date,
-    required: true,
-    default: new Date()
-  },
   login: {
     default: true,
     type: Boolean,
     required: true
-  },
-  lastLogin: {
-    type: String,
-    required: true,
-    default: new Date().getTime()
   },
   token: {
     type: String,
