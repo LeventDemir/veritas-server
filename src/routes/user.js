@@ -170,27 +170,24 @@ router.post('/getUsers', (req, res) => {
         if (user) {
             if (user.login) {
                 User.find({}, (err, users) => {
-                    if (users) {
-                        res.json(users)
-                    } else res.json({ el: "auth" })
+                    if (users) res.json(users)
+                    else res.json({ success: false })
                 })
-            } else res.json({ el: "auth" })
-        } else res.json({ el: false })
+            } else res.json({ success: false })
+        } else res.json({ success: false })
     })
 })
 
 
 // Get user
 router.post('/getUser', (req, res) => {
-
     User.findOne({ token: req.body.token }, (err, user) => {
         if (user) {
             if (user.login)
                 if (user) res.json({ uuid: user.uuid, photo: user.photo, username: user.username })
-                else res.json({ el: "auth" })
-        } else res.json({ el: false })
+                else res.json({ success: false })
+        } else res.json({ success: false })
     })
-
 })
 
 
