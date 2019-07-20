@@ -179,52 +179,56 @@ router.post('/remove', (req, res) => {
 
 
 // Get products
-router.get('/getProducts', (req, res) => {
+router.get('/products', (req, res) => {
     Product.find({}, (err, products) => {
-        const data = []
+        if (products) {
+            const data = []
 
-        for (let product in products) {
-            let x = {}
+            for (let product in products) {
+                let x = {}
 
-            x.uuid = products[product].uuid
-            x.photo = products[product].photo
-            x.name = products[product].name
-            x.categorie = products[product].categorie
+                x.uuid = products[product].uuid
+                x.photo = products[product].photo
+                x.name = products[product].name
+                x.categorie = products[product].categorie
 
-            data.unshift(x)
+                data.unshift(x)
 
-            x = {}
-        }
+                x = {}
+            }
 
-        res.json(data)
+            res.json(data)
+        } else res.json([])
     })
 })
 
 
 // Get products by categorie
-router.get('/getProductsByCategorie', (req, res) => {
+router.get('/categorie', (req, res) => {
     Product.find({ categorie: req.query.categorie }, (err, products) => {
-        const data = []
+        if (products) {
+            const data = []
 
-        for (let product in products) {
-            let x = {}
+            for (let product in products) {
+                let x = {}
 
-            x.uuid = products[product].uuid
-            x.photo = products[product].photo
-            x.name = products[product].name
+                x.uuid = products[product].uuid
+                x.photo = products[product].photo
+                x.name = products[product].name
 
-            data.unshift(x)
+                data.unshift(x)
 
-            x = {}
-        }
+                x = {}
+            }
 
-        res.json(data)
+            res.json(data)
+        } else res.json([])
     })
 })
 
 
 // Get product
-router.get('/getProduct', (req, res) => {
+router.get('/product', (req, res) => {
     Product.findOne({ uuid: req.query.product }, (err, product) => {
         if (product) res.json({
             photo: product.photo,
@@ -234,7 +238,7 @@ router.get('/getProduct', (req, res) => {
             categoriePdf: product.categoriePdf,
             featuresPdf: product.featuresPdf
         })
-        else res.json({ el: false })
+        else res.json({ success: false })
     })
 })
 
