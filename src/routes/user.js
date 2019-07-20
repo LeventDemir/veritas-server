@@ -127,18 +127,15 @@ router.post('/logout', (req, res) => {
 
 // Is auth
 router.post('/isAuth', (req, res) => {
-
     User.findOne({ token: req.body.token }, (err, user) => {
         if (user) res.json({ isAuth: user.login })
         else res.json({ isAuth: false })
     })
-
 })
 
 
 // Remove user
-router.post('/removeUser', (req, res) => {
-
+router.post('/remove', (req, res) => {
     const data = req.body.data
 
     if (data) {
@@ -150,18 +147,20 @@ router.post('/removeUser', (req, res) => {
                             if (user) {
                                 if (user.login) {
                                     User.findOne({ uuid: data.user }, (err, user) => {
-                                        if (user) user.remove(res.json({ msg: 'removed' }))
-                                        else res.json({ el: false })
+                                        if (user) user.remove(err => {
+                                            if (err) res.json({ success: false })
+                                            else res.json({ success: true })
+                                        })
+                                        else res.json({ success: false })
                                     })
-                                } else res.json({ el: false })
-                            } else res.json({ el: false })
+                                } else res.json({ success: false })
+                            } else res.json({ success: false })
                         })
-                    } else res.json({ el: 'length' })
-                } else res.json({ el: false })
+                    } else res.json({ success: false })
+                } else res.json({ success: false })
             })
-        } else res.json({ el: false })
-    } else res.json({ el: false })
-
+        } else res.json({ success: false })
+    } else res.json({ success: false })
 })
 
 
