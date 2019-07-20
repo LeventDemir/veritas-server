@@ -58,7 +58,7 @@ router.post('/create', (req, res) => {
 
 
 // Update product
-router.post('/updateProduct', (req, res) => {
+router.post('/update', (req, res) => {
     const data = req.body.data
 
     if (data) {
@@ -123,14 +123,14 @@ router.post('/updateProduct', (req, res) => {
                                     product.featuresPdf = ""
                                 }
 
-                                product.save(res.json({ msg: 'updated' }))
-                            } else res.json({ el: false })
+                                product.save(res.json({ success: true }))
+                            } else res.json({ success: false })
                         })
-                    } else res.json({ el: false })
-                } else res.json({ el: false })
+                    } else res.json({ success: false })
+                } else res.json({ success: false })
             })
-        } else res.json({ el: false })
-    } else res.json({ el: false })
+        } else res.json({ success: false })
+    } else res.json({ success: false })
 })
 
 
