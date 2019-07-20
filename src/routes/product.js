@@ -135,7 +135,7 @@ router.post('/update', (req, res) => {
 
 
 // Remove product
-router.post('/removeProduct', (req, res) => {
+router.post('/remove', (req, res) => {
     const data = req.body.data
 
     if (data) {
@@ -144,7 +144,6 @@ router.post('/removeProduct', (req, res) => {
                 if (user) {
                     if (user.login) {
                         Product.findOne({ uuid: data.product }, (err, product) => {
-                            const uuid = product.uuid
                             if (product) {
                                 const photo = fs.readdirSync(`src/static/${product.uuid}/photo/`)
                                 const pdfs = fs.readdirSync(`src/static/${product.uuid}/`)
@@ -152,8 +151,8 @@ router.post('/removeProduct', (req, res) => {
                                 if (photo.length > 0)
                                     fs.unlinkSync(`src/static/${product.uuid}/photo/${photo[0]}`)
 
-                                fs.rmdirSync(`src/static/${product.uuid}/photo`)
-
+                                if (fs.existsSync(`src/static/${product.uuid}/photo`))
+                                    fs.rmdirSync(`src/static/${product.uuid}/photo`)
 
                                 if (pdfs.includes('categorie.pdf'))
                                     fs.unlinkSync(`src/static/${product.uuid}/categorie.pdf`)
@@ -161,17 +160,21 @@ router.post('/removeProduct', (req, res) => {
                                 if (pdfs.includes('features.pdf'))
                                     fs.unlinkSync(`src/static/${product.uuid}/features.pdf`)
 
-                                fs.rmdirSync(`src/static/${product.uuid}`)
+                                if (fs.existsSync(`src/static/${product.uuid}`))
+                                    fs.rmdirSync(`src/static/${product.uuid}`)
 
-                                product.remove(res.json({ msg: 'removed' }))
+                                product.remove(err => {
+                                    if (err) res.json({ success: false })
+                                    else res.json({ success: true })
+                                })
                             }
-                            else res.json({ el: false })
+                            else res.json({ success: false })
                         })
-                    } else res.json({ el: false })
-                } else res.json({ el: false })
+                    } else res.json({ success: false })
+                } else res.json({ success: false })
             })
-        } else res.json({ el: false })
-    } else res.json({ el: false })
+        } else res.json({ success: false })
+    } else res.json({ success: false })
 })
 
 
