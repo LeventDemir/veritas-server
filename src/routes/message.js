@@ -21,8 +21,7 @@ router.post('/send', (req, res) => {
             new Message(data).save(err => {
                 if (err) res.json({ success: false })
                 else res.json({ success: true })
-            }
-            )
+            })
         } else res.json({ success: false })
     }
 })
@@ -30,13 +29,11 @@ router.post('/send', (req, res) => {
 
 // Get messages
 router.post('/messages', (req, res) => {
-
     User.findOne({ token: req.body.token }, (err, user) => {
         if (user) {
             if (user.login) {
                 Message.find({}, (err, messages) => {
                     if (messages) {
-
                         const data = []
 
                         let noRead = 0
@@ -57,13 +54,11 @@ router.post('/messages', (req, res) => {
                         }
 
                         res.json({ messages: data, noRead })
-
                     } else res.json({ success: false })
                 })
             } else res.json({ success: false })
         } else res.json({ success: false })
     })
-
 })
 
 
