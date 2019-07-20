@@ -11,39 +11,35 @@ router.post("/createUser", (req, res) => {
 
     if (data) {
         if (data.token && data.username && data.password && data.photo) {
-            if (
-                data.username.length > 2 &&
-                data.username.length < 21 &&
-                data.password.length > 7 &&
-                data.password.length < 17
-            ) {
-                User.findOne({ token: data.token }, (err, user) => {
-                    if (user) {
-                        if (user.login) {
-                            User.findOne({ username: data.username }, (err, user) => {
-                                if (user) {
-                                    res.json({ el: "there is" });
-                                } else {
-                                    data.uuid = randGen(100);
-                                    data.token = randGen(100);
+            User.findOne({ token: data.token }, (err, user) => {
+                if (user) {
+                    if (user.login) {
+                        User.findOne({ username: data.username }, (err, user) => {
+                            if (user) {
+                                res.json({ msg: "there is" });
+                            } else {
+                                data.uuid = randGen(100);
+                                data.token = randGen(100);
 
-                                    const newUser = new User(data);
+                                const newUser = new User(data);
 
-                                    bcrypt.genSalt(10, (err, salt) => {
-                                        bcrypt.hash(newUser.password, salt, (err, hash) => {
-                                            newUser.password = hash;
+                                bcrypt.genSalt(10, (err, salt) => {
+                                    bcrypt.hash(newUser.password, salt, (err, hash) => {
+                                        newUser.password = hash;
 
-                                            newUser.save(res.json({ token: data.token }));
+                                        newUser.save(err => {
+                                            if (err) res.json({ success: false })
+                                            else res.json({ token: data.token })
                                         });
                                     });
-                                }
-                            });
-                        } else res.json({ el: false })
-                    } else res.json({ el: false })
-                })
-            } else res.json({ el: false });
-        } else res.json({ el: false });
-    } else res.json({ el: false });
+                                });
+                            }
+                        });
+                    } else res.json({ success: false })
+                } else res.json({ success: false })
+            })
+        } else res.json({ success: false });
+    } else res.json({ success: false });
 });
 
 
