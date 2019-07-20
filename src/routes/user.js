@@ -112,17 +112,16 @@ router.post("/login", (req, res) => {
 
 // Logout
 router.post('/logout', (req, res) => {
-
     User.findOne({ token: req.body.token }, (err, user) => {
         if (user) {
-
             user.login = false
 
-            user.save(res.json({ msg: "signed out" }))
-
-        } else res.json({ el: false })
+            user.save(err => {
+                if (err) res.json({ success: false })
+                else res.json({ success: true })
+            })
+        } else res.json({ success: false })
     })
-
 })
 
 
