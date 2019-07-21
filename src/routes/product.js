@@ -28,21 +28,21 @@ router.post('/create', (req, res) => {
 
                         fs.writeFileSync(`src/static/${data.uuid}/photo/${imageName}`, buffer);
 
-                        data.photo = `http://127.0.0.1:3000/static/${data.uuid}/photo/${imageName}`
+                        data.photo = `http://ec2-52-14-172-108.us-east-2.compute.amazonaws.com/static/${data.uuid}/photo/${imageName}`
 
                         if (data.categoriePdf) {
                             const pdfData = data.categoriePdf.replace(/^data:application\/\w+;base64,/, "");
                             const buffer = new Buffer(pdfData, 'base64');
                             fs.writeFileSync(`src/static/${data.uuid}/categorie.pdf`, buffer);
 
-                            data.categoriePdf = `http://127.0.0.1:3000/static/${data.uuid}/categorie.pdf`
+                            data.categoriePdf = `http://ec2-52-14-172-108.us-east-2.compute.amazonaws.com/static/${data.uuid}/categorie.pdf`
                         }
 
                         if (data.featuresPdf) {
                             const pdfData = data.featuresPdf.replace(/^data:application\/\w+;base64,/, "");
                             const buffer = new Buffer(pdfData, 'base64');
                             fs.writeFileSync(`src/static/${data.uuid}/features.pdf`, buffer);
-                            data.featuresPdf = `http://127.0.0.1:3000/static/${data.uuid}/features.pdf`
+                            data.featuresPdf = `http://ec2-52-14-172-108.us-east-2.compute.amazonaws.com/static/${data.uuid}/features.pdf`
                         }
 
                         new Product(data).save(err => {
@@ -86,7 +86,7 @@ router.post('/update', (req, res) => {
 
                                     fs.writeFileSync(`src/static/${product.uuid}/photo/${imageName}`, buffer);
 
-                                    product.photo = `http://127.0.0.1:3000/static/${product.uuid}/photo/${imageName}`
+                                    product.photo = `http://ec2-52-14-172-108.us-east-2.compute.amazonaws.com/static/${product.uuid}/photo/${imageName}`
                                 }
 
                                 if (data.categoriePdf) {
@@ -95,7 +95,7 @@ router.post('/update', (req, res) => {
                                         const buffer = new Buffer(pdfData, 'base64');
                                         fs.writeFileSync(`src/static/${product.uuid}/categorie.pdf`, buffer);
 
-                                        product.categoriePdf = `http://127.0.0.1:3000/static/${product.uuid}/categorie.pdf`
+                                        product.categoriePdf = `http://ec2-52-14-172-108.us-east-2.compute.amazonaws.com/static/${product.uuid}/categorie.pdf`
                                     }
                                 } else {
                                     const categoriePdf = fs.readdirSync(`src/static/${product.uuid}/`)
@@ -112,7 +112,7 @@ router.post('/update', (req, res) => {
                                         const buffer = new Buffer(pdfData, 'base64');
                                         fs.writeFileSync(`src/static/${product.uuid}/features.pdf`, buffer);
 
-                                        product.featuresPdf = `http://127.0.0.1:3000/static/${product.uuid}/features.pdf`
+                                        product.featuresPdf = `http://ec2-52-14-172-108.us-east-2.compute.amazonaws.com/static/${product.uuid}/features.pdf`
                                     }
                                 } else {
                                     const featuresPdf = fs.readdirSync(`src/static/${product.uuid}/`)
